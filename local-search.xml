@@ -4,6 +4,19 @@
   
   
   <entry>
+    <title>Records of several problem solving</title>
+    <link href="/2022/07/19/Records%20of%20several%20problem%20solving/"/>
+    <url>/2022/07/19/Records%20of%20several%20problem%20solving/</url>
+    
+    <content type="html"><![CDATA[<h1 id="一、A-large-number-of-“Connect-Reset”-when-tring-get-access-to-the-Gateway"><a href="#一、A-large-number-of-“Connect-Reset”-when-tring-get-access-to-the-Gateway" class="headerlink" title="一、A large number of “Connect Reset” when tring get access to the Gateway"></a>一、A large number of “Connect Reset” when tring get access to the Gateway</h1><h2 id="1-Determine-if-there-is-an-error-in-the-gateway-or-in-the-service-that-initiated-the-call"><a href="#1-Determine-if-there-is-an-error-in-the-gateway-or-in-the-service-that-initiated-the-call" class="headerlink" title="1.Determine if there is an error in the gateway or in the service that initiated the call"></a>1.Determine if there is an error in the gateway or in the service that initiated the call</h2><p>By initiating several calls to cause error logging, while logging the incoming and outgoing records at the caller and the gateway, it is found that there is a probability that the gateway does not receive messages from the caller, while other services call the gateway without missing messages, identifying the error at the service caller</p><h2 id="2-Determine-the-relevant-parameters-in-the-resttemplate-that-control-the-connection-and-check"><a href="#2-Determine-the-relevant-parameters-in-the-resttemplate-that-control-the-connection-and-check" class="headerlink" title="2.Determine the relevant parameters in the resttemplate that control the connection and check"></a>2.Determine the relevant parameters in the resttemplate that control the connection and check</h2><p>As the service is called via resttemplate, the priority is to consider whether the resttemplate is set incorrectly, causing the connect to be reset frequently. After searching for information, I found that a connection pool parameter was set too large, causing</p><h2 id="3-Debug-verification-and-modification"><a href="#3-Debug-verification-and-modification" class="headerlink" title="3.Debug verification and modification"></a>3.Debug verification and modification</h2><p>Turned on Debug logging level for resttemplate separately, reproduced the problem, looked up the logs and found that a large number of closed connections were indeed being fetched from the connection pool, so changed the connection pool parameters and the problem was solved</p><h1 id="二、Thread-leakage-troubleshooting"><a href="#二、Thread-leakage-troubleshooting" class="headerlink" title="二、Thread leakage troubleshooting"></a>二、Thread leakage troubleshooting</h1><h2 id="1-Service-memory-found-to-be-linearly-increasing"><a href="#1-Service-memory-found-to-be-linearly-increasing" class="headerlink" title="1.Service memory found to be linearly increasing"></a>1.Service memory found to be linearly increasing</h2><p>In this case, the first thing I thought of was a memory leak, but found that the in-heap memory was normal and suspected an out-of-heap memory leak, only to find out that the number of threads had increased abnormally, resulting in a large amount of out-of-heap memory being used</p><h2 id="2-Exception-thread-location"><a href="#2-Exception-thread-location" class="headerlink" title="2.Exception thread location"></a>2.Exception thread location</h2><p>The threads added to the exception were all named “pool-2-thread-1”, which is obviously a thread pool leak. The reason for this is that there is a method that creates a pool of threads without calling it once, but does not release the call, causing the threads to persist</p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>实习总结</title>
     <link href="/2022/03/21/%E5%AE%9E%E4%B9%A0%E6%80%BB%E7%BB%93/"/>
     <url>/2022/03/21/%E5%AE%9E%E4%B9%A0%E6%80%BB%E7%BB%93/</url>
